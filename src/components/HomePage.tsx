@@ -34,6 +34,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSignOut }) => 
     if (!user) return
 
     try {
+      setLoading(true)
       const { data } = await supabase
         .from('user_sessions')
         .select(`
@@ -42,10 +43,11 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSignOut }) => 
         `)
         .eq('user_id', user.id)
         .eq('is_active', true)
-        .single()
+        .maybeSingle()
 
       setActiveSession(data)
     } catch (error) {
+      console.error('Error fetching active session:', error)
       // No active session found
       setActiveSession(null)
     } finally {
